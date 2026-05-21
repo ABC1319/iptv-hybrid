@@ -1,0 +1,81 @@
+name: Hybrid IPTV Builder
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'        # 每6小时运行一次
+  workflow_dispatch:               # 支持手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write              # 允许推送回仓库
+    steps:
+      - name: Checkout own repository
+        uses: actions/checkout@v4
+
+      # ---------- 1. 克隆 Collect-IPTV ----------
+      - name: Clone Collect-IPTV
+        run: |
+          git clone https://github.com/zilong7728/Collect-IPTV.git collect-iptv
+
+      # ---------- 2. 运行 Collect-IPTV 采集 ----------
+      - name: Set up Python for Collect-IPTV
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies (Collect-IPTV)
+        run: |
+          cd collect-iptv
+          pip install -r requirements.txt || echo "No requirements.txt"
+
+      - name: Run Collect-IPTV
+        run: |
+          cd collect-iptv
+          python iptv.py
+
+      # ---------- 3. 准备 iptv-api 订阅源 ----------
+      - name: Prepare subscribe.txt for iptv-api
+        run: |
+          # 保留原有订阅内容（如果有）
+          cp config/subscribe.txt config/subscribe.txt.bak 2>/dev/null || true
+          # 添加 Collect-IPTV 的生成结果
+          echo "# 来自 Collect-IPTV 的 AI 优选源" > config/subscribe.txt
+          echo "../collect-iptv/best_sorted.m3u" >> config/subscribe.txt
+          # 可选：追加其他第三方源（保留原有内容）
+          if [ -f config/subscribe.txt.bak ]; then
+            cat config/subscribe.txt.bak >> config/subscribe.txt
+          fi
+
+      # ---------- 4. 克隆 iptv-api ----------
+      - name: Clone iptv-api
+        run: |
+          git clone https://github.com/Guovin/iptv-api.git iptv-api
+
+      # ---------- 5. 运行 iptv-api 聚合 ----------
+      - name: Install dependencies (iptv-api)
+        run: |
+          cd iptv-api
+          pip install -r requirements.txt
+
+      - name: Run iptv-api
+        run: |
+          cd iptv-api
+          python main.py --config ../config/config.ini
+
+      # ---------- 6. 复制最终结果到 output/ ----------
+      - name: Copy final outputs
+        run: |
+          mkdir -p output
+          cp iptv-api/output/result.m3u output/
+          cp iptv-api/output/result.txt output/
+
+      # ---------- 7. 提交并推送结果 ----------
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          git diff --staged --quiet || git commit -m "Auto update IPTV list [skip actions]"
+          git push
