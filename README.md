@@ -2,42 +2,41 @@
 
 本服务自动从多个上游源采集 IPTV 直播地址，通过并发测速和媒体流完整性校验，过滤无效、低码率及广告源，并按央视、卫视、地方、体育、动漫等类别智能分类，最终输出标准 M3U 和 TXT 格式播放列表。
 
+# IPTV Hybrid Builder
+
+融合 [Guovin/iptv-api](https://github.com/Guovin/iptv-api) 与 [zilong7728/Collect-IPTV](https://github.com/zilong7728/Collect-IPTV) 的全自动 IPTV 播放列表生成方案。
+
 ## 功能特点
 
-- ✅ 多源采集（支持 M3U 和 TXT 格式）
-- ✅ 并发测速（HTTP + ffprobe 深度校验）
-- ✅ 广告源过滤
-- ✅ 智能分类（基于名称正则）
-- ✅ 单频道择优（每个频道最多保留3个最佳源）
-- ✅ 双格式输出（TXT / M3U）
-- ✅ 全自动定时运行（GitHub Actions，每天两次）
-- ✅ 免费部署在 GitHub Pages
+- **自动采集**：每6小时运行一次，获取 AI 优选直播源（Collect-IPTV）
+- **智能聚合**：多源合并、去重、测速筛选、EPG 匹配（iptv-api）
+- **一键部署**：仅需 GitHub Actions，无需服务器
+- **结果直链**：最终播放列表位于 `output/result.m3u`
 
-## 部署步骤
+## 如何使用
 
-1. Fork 或克隆本仓库到你的 GitHub 账号
-2. （可选）修改 `config.py` 中的上游源、分类规则等
-3. 进入仓库 Settings → Pages，将 Source 设为 `Deploy from branch`，分支 `main`，目录 `/docs`
-4. GitHub Actions 会自动运行，首次可手动触发（Actions → IPTV Speed Checker → Run workflow）
-5. 等待运行完成后，通过以下地址访问：
-   - M3U: `https://你的用户名.github.io/仓库名/output/iptv.m3u`
-   - TXT: `https://你的用户名.github.io/仓库名/output/iptv.txt`
-   - 网页入口: `https://你的用户名.github.io/仓库名/`
+1. **Fork 本仓库**（或按上述结构新建仓库）
+2. **启用 GitHub Actions**：仓库 Settings → Actions → General → Allow all actions
+3. **手动触发**：进入 Actions 选项卡，选择 "Hybrid IPTV Builder" → Run workflow
+4. **获取播放地址**：
+   - Raw 链接：`https://raw.githubusercontent.com/你的用户名/仓库名/main/output/result.m3u`
+   - 若启用 Pages：`https://你的用户名.github.io/仓库名/result.m3u`
 
-## 自定义配置
+## 自定义频道列表
 
-- 修改 `config.py` 中的 `SOURCE_URLS` 可以增减上游源
-- 修改 `CLASSIFY_RULES` 可以调整分类规则
-- 修改 `CHANNEL_NORMALIZATION` 可以合并同名频道
-- 修改 `SPEED_CONFIG` 可调整测速超时和并发数
+编辑 `config/demo.txt`，按行添加你想要的频道名。
 
-## 本地运行
+## 更新频率
 
-```bash
-git clone https://github.com/你的用户名/iptv-speed-checker.git
-cd iptv-speed-checker
-pip install -r requirements.txt
-# 需要安装 ffmpeg (用于 ffprobe)
-sudo apt install ffmpeg   # Ubuntu/Debian
-# 或 brew install ffmpeg  # macOS
-python main.py
+工作流默认每6小时运行一次。如需修改，编辑 `.github/workflows/hybrid.yml` 中的 `cron` 表达式。
+
+## 故障排查
+
+- 检查 Actions 运行日志，确认克隆和依赖安装成功。
+- 若部分频道无结果，可调整 `config/alias.txt` 增加别名。
+- 测速可能受 GitHub 网络影响，可关闭 `open_speed_test` 或调整超时参数。
+
+## 致谢
+
+- [Guovin/iptv-api](https://github.com/Guovin/iptv-api)
+- [zilong7728/Collect-IPTV](https://github.com/zilong7728/Collect-IPTV)
