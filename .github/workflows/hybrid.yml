@@ -2,22 +2,23 @@ name: Hybrid IPTV Builder
 
 on:
   schedule:
-    - cron: '0 */6 * * *'        # 每6小时运行一次
-  workflow_dispatch:               # 支持手动触发
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+# 关键修复：在作业级别设置写入权限
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write              # 允许推送回仓库
     steps:
       - name: Checkout own repository
         uses: actions/checkout@v4
 
       # ---------- 1. 克隆 Collect-IPTV ----------
       - name: Clone Collect-IPTV
-        run: |
-          git clone https://github.com/zilong7728/Collect-IPTV.git collect-iptv
+        run: git clone https://github.com/zilong7728/Collect-IPTV.git collect-iptv
 
       # ---------- 2. 运行 Collect-IPTV 采集 ----------
       - name: Set up Python for Collect-IPTV
@@ -38,20 +39,25 @@ jobs:
       # ---------- 3. 准备 iptv-api 订阅源 ----------
       - name: Prepare subscribe.txt for iptv-api
         run: |
-          # 保留原有订阅内容（如果有）
-          cp config/subscribe.txt config/subscribe.txt.bak 2>/dev/null || true
-          # 添加 Collect-IPTV 的生成结果
+          # 确保 config 目录存在
+          mkdir -p config
+          # 检查并复制现有的 subscribe.txt 文件
+          if [ -f config/subscribe.txt ]; then
+            cp config/subscribe.txt config/subscribe.txt.bak
+          else
+            touch config/subscribe.txt.bak
+          fi
+          # 生成新的 subscribe.txt，将 Collect-IPTV 的输出放在首位
           echo "# 来自 Collect-IPTV 的 AI 优选源" > config/subscribe.txt
           echo "../collect-iptv/best_sorted.m3u" >> config/subscribe.txt
-          # 可选：追加其他第三方源（保留原有内容）
-          if [ -f config/subscribe.txt.bak ]; then
+          # 追加其他原有订阅源
+          if [ -s config/subscribe.txt.bak ]; then
             cat config/subscribe.txt.bak >> config/subscribe.txt
           fi
 
       # ---------- 4. 克隆 iptv-api ----------
       - name: Clone iptv-api
-        run: |
-          git clone https://github.com/Guovin/iptv-api.git iptv-api
+        run: git clone https://github.com/Guovin/iptv-api.git iptv-api
 
       # ---------- 5. 运行 iptv-api 聚合 ----------
       - name: Install dependencies (iptv-api)
@@ -59,23 +65,27 @@ jobs:
           cd iptv-api
           pip install -r requirements.txt
 
+      # 关键修复：直接运行，程序会自动读取 config/config.ini
       - name: Run iptv-api
         run: |
           cd iptv-api
-          python main.py --config ../config/config.ini
+          python main.py
 
       # ---------- 6. 复制最终结果到 output/ ----------
       - name: Copy final outputs
         run: |
           mkdir -p output
-          cp iptv-api/output/result.m3u output/
-          cp iptv-api/output/result.txt output/
+          # 查找并复制所有可能的输出文件
+          find iptv-api -name "*.m3u" -exec cp {} output/ \;
+          find iptv-api -name "*.txt" -exec cp {} output/ \;
 
       # ---------- 7. 提交并推送结果 ----------
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add output/
+          git add output/ collect-iptv/best_sorted.m3u
+          # 确保 config 目录下的关键文件被追踪
+          git add config/demo.txt config/config.ini config/subscribe.txt
           git diff --staged --quiet || git commit -m "Auto update IPTV list [skip actions]"
           git push
