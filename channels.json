@@ -1,0 +1,25 @@
+{
+  "央视": [
+    {"raw_name": "CCTV-1", "name": "CCTV-1 综合", "logo": "https://epg.pics/CCTV1.png", "tvg_id": "CCTV1"},
+    {"raw_name": "CCTV-2", "name": "CCTV-2 财经", "logo": "https://epg.pics/CCTV2.png", "tvg_id": "CCTV2"},
+    {"raw_name": "CCTV-3", "name": "CCTV-3 综艺", "logo": "https://epg.pics/CCTV3.png", "tvg_id": "CCTV3"},
+    {"raw_name": "CCTV-4", "name": "CCTV-4 中文国际", "logo": "https://epg.pics/CCTV4.png", "tvg_id": "CCTV4"},
+    {"raw_name": "CCTV-5", "name": "CCTV-5 体育", "logo": "https://epg.pics/CCTV5.png", "tvg_id": "CCTV5"},
+    {"raw_name": "CCTV-5+", "name": "CCTV-5+ 体育赛事", "logo": "https://epg.pics/CCTV5Plus.png", "tvg_id": "CCTV5Plus"},
+    {"raw_name": "CCTV-6", "name": "CCTV-6 电影", "logo": "https://epg.pics/CCTV6.png", "tvg_id": "CCTV6"},
+    {"raw_name": "CCTV-7", "name": "CCTV-7 国防军事", "logo": "https://epg.pics/CCTV7.png", "tvg_id": "CCTV7"},
+    {"raw_name": "CCTV-8", "name": "CCTV-8 电视剧", "logo": "https://epg.pics/CCTV8.png", "tvg_id": "CCTV8"},
+    {"raw_name": "CCTV-9", "name": "CCTV-9 纪录", "logo": "https://epg.pics/CCTV9.png", "tvg_id": "CCTV9"},
+    {"raw_name": "CCTV-10", "name": "CCTV-10 科教", "logo": "https://epg.pics/CCTV10.png", "tvg_id": "CCTV10"},
+    {"raw_name": "CCTV-11", "name": "CCTV-11 戏曲", "logo": "https://epg.pics/CCTV11.png", "tvg_id": "CCTV11"},
+    {"raw_name": "CCTV-12", "name": "CCTV-12 社会与法", "logo": "https://epg.pics/CCTV12.png", "tvg_id": "CCTV12"},
+    {"raw_name": "CCTV-13", "name": "CCTV-13 新闻", "logo": "https://epg.pics/CCTV13.png", "tvg_id": "CCTV13"}
+  ],
+  "卫视": [
+    {"raw_name": "湖南卫视", "name": "湖南卫视", "logo": "https://epg.pics/HunanTV.png", "tvg_id": "HunanTV"},
+    {"raw_name": "浙江卫视", "name": "浙江卫视", "logo": "https://epg.pics/ZhejiangTV.png", "tvg_id": "ZhejiangTV"},
+    {"raw_name": "东方卫视", "name": "东方卫视", "logo": "https://epg.pics/DragonTV.png", "tvg_id": "DragonTV"},
+    {"raw_name": "江苏卫视", "name": "江苏卫视", "logo": "https://epg.pics/JiangsuTV.png", "tvg_id": "JiangsuTV"},
+    {"raw_name": "北京卫视", "name": "北京卫视", "logo": "https://epg.pics/BeijingTV.png", "tvg_id": "BeijingTV"}
+  ]
+}
