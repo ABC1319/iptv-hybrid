@@ -12,9 +12,12 @@ session = requests.Session()
 # ===================== 配置区 =====================
 # 采集源
 COLLECT_URLS = [
-    "https://raw.githubusercontent.com/zilong7728/Collect-IPTV/main/output/iptv.m3u",
-    "https://raw.githubusercontent.com/Guovin/iptv-api/main/source/iptv.m3u",
-    "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
+    "https://raw.githubusercontent.com/iptv-org/iptv/gh-pages/countries/cn.m3u",
+    "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u",
+    "https://raw.githubusercontent.com/suxuang/myIPTV/main/ipv4.m3u",
+    "https://raw.githubusercontent.com/vbskycn/iptv/master/tv/iptv4.txt",
+    "https://raw.githubusercontent.com/zzgpy1/Collect-IPTV/main/best_sorted.m3u",
+    "https://raw.githubusercontent.com/dogwalkerg/IPTV-collect-tv-txt/main/others_output.txt"
 ]
 
 # 输出文件
