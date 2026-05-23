@@ -19,7 +19,9 @@
 4. 输出标准IPTV m3u文件
 
 ## 订阅地址
-`https://raw.githubusercontent.com/你的GitHub用户名/你的仓库名/main/iptv.m3u`
+`https://raw.githubusercontent.com/abc1319/iptv-hybrid/main/iptv.m3u`
+
+`https://gh-proxy.org/https://raw.githubusercontent.com//abc1319/iptv-hybrid/main/iptv.m3u`
 
 ## 电子节目指南（EPG）
 `https://live.fanmingming.com/e.xml`
